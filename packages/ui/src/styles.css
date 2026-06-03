@@ -1,18 +1,144 @@
-/* Optional shared base styles. Apps can import this from `@repo/ui/styles.css`
-   on top of their own Tailwind layer. Mirror the tokens in
-   packages/ui/src/theme/index.ts when re-theming. */
+/* GasKya shared base styles + token layer.
+   Mirrors design-system/projects/gaskya/preview/_foundation.css.
+   Apps import this via `@gaskya/ui/styles.css` on top of their Tailwind layer.
+   Components consume these CSS vars directly (var(--ac), var(--paper), …) so
+   the package stays usable without a full Tailwind theme merge. Keep in sync
+   with packages/ui/src/theme/index.ts and the app tailwind.config.ts files. */
 
 :root {
-  --brand: #1e3a8a;
-  --brand-strong: #1d4ed8;
-  --surface: #f8fafc;
-  --accent: #ea580c;
-  --ink: #0f172a;
+  /* Paper & ink (warm, no pure black) */
+  --paper: #f6f1ec;
+  --paper-2: #efe8e0;
+  --sheet: #ffffff;
+  --ink: #2c2620;
+  --ink-2: #4a4338;
+  --ink-3: #7c7264;
+  --ink-4: #a89e90;
+  --hair: #e3dacf;
+  --hair-2: #ebe3d8;
+
+  /* Aubergine — the single accent */
+  --ac: #5a2a4d;
+  --ac-deep: #421e39;
+  --ac-press: #2b1326;
+  --ac-soft: #f3ebf1;
+  --ac-edge: #dfcbda;
+  --ac-mid: #8a4f7c;
+
+  /* Reserved states */
+  --crit: #a1281e;
+  --crit-soft: #fbeeec;
+  --crit-edge: #e6c2bd;
+  --warn: #9a6612;
+  --warn-soft: #fbf3e2;
+  --warn-edge: #e8d6a8;
+  --good: #4e6b4f;
+  --good-soft: #ecf1ea;
+  --good-edge: #cbdac6;
+
+  /* Type */
+  --serif: 'Fraunces', Georgia, 'Times New Roman', serif;
+  --sans: 'Inter', system-ui, -apple-system, sans-serif;
+  --mono: 'JetBrains Mono', ui-monospace, monospace;
+
+  /* Geometry */
+  --r-sm: 10px;
+  --r-input: 14px;
+  --r-card: 18px;
+  --r-lg: 22px;
+  --r-bub: 999px;
+
+  /* The physical key-press depth */
+  --lift: 3px;
 }
 
 html,
 body {
-  font-family: 'Inter', system-ui, sans-serif;
-  background: var(--surface);
+  font-family: var(--sans);
+  background: var(--paper);
   color: var(--ink);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+::selection {
+  background: var(--ac-soft);
+  color: var(--ac-deep);
+}
+
+::-webkit-scrollbar {
+  width: 9px;
+  height: 9px;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--hair);
+  border-radius: 5px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--ink-4);
+}
+
+/* The physical key-press button (AppButton).
+   At rest it's raised on its --gk-edge (set inline per variant). Hover lifts
+   the face 1px and grows the edge 1px; active drops the face the full lift and
+   collapses the edge to 0 — it lands like a real key. Transform + box-shadow
+   only; a hard coloured edge, no blur. */
+.gk-key {
+  transform: translateY(0);
+  transition:
+    transform 90ms cubic-bezier(0.2, 0.7, 0.3, 1),
+    box-shadow 90ms cubic-bezier(0.2, 0.7, 0.3, 1),
+    background-color 130ms ease,
+    border-color 130ms ease,
+    color 130ms ease;
+}
+.gk-key:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 calc(var(--gk-lift) + 1px) 0 0 var(--gk-edge) !important;
+}
+.gk-key:active {
+  transform: translateY(var(--gk-lift));
+  box-shadow: 0 0 0 0 var(--gk-edge) !important;
+}
+@media (prefers-reduced-motion: reduce) {
+  .gk-key,
+  .gk-key:hover,
+  .gk-key:active {
+    transform: translateY(0);
+  }
+}
+
+/* The live test clock's final-seconds pulse */
+@keyframes gk-clockpulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.35;
+  }
+}
+
+/* Skeleton shimmer */
+@keyframes gk-shimmer {
+  0% {
+    background-position: 100% 0;
+  }
+  100% {
+    background-position: -100% 0;
+  }
+}
+
+/* Spinner */
+@keyframes gk-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+  }
 }

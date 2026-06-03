@@ -1,6 +1,6 @@
 import { type HTMLAttributes, type ElementType, type ReactNode } from 'react';
 
-import { cn } from '../../utils/cn.js';
+import { cn } from '../../utils/cn.ts';
 
 export type AppTextVariant =
   | 'display-1'
@@ -26,7 +26,7 @@ const VARIANT_CLASSES: Record<AppTextVariant, string> = {
   'heading-3': 'text-xl font-semibold leading-snug',
   body: 'text-base leading-relaxed',
   'body-sm': 'text-sm leading-relaxed',
-  caption: 'text-xs uppercase tracking-wide text-[#334155]',
+  caption: 'font-mono text-xs uppercase tracking-wide text-[var(--ink-3)]',
 };
 
 const DEFAULT_ELEMENT: Record<AppTextVariant, ElementType> = {
