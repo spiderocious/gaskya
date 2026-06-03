@@ -99,3 +99,29 @@ export type {
   AppAnswerGridProps,
   AppBubbleReviewProps,
 } from './data/app-question/index.ts';
+export { AppAudioPlayer, AppVideoPlayer, AppTranscript } from './data/app-media/index.ts';
+export type {
+  AppAudioPlayerProps,
+  FrameMark,
+  AppVideoPlayerProps,
+  TranscriptSegment,
+  AppTranscriptProps,
+} from './data/app-media/index.ts';
+
+// Overlays
+export { AppTooltip, AppPopover } from './overlays/app-overlay/index.ts';
+export type { AppTooltipProps, AppPopoverProps } from './overlays/app-overlay/index.ts';
+export { AppToast, AppBanner } from './overlays/app-feedback/index.ts';
+export type { FeedbackTone, AppToastProps, AppBannerProps } from './overlays/app-feedback/index.ts';
+export { AppModal, AppTypedConfirmModal } from './overlays/app-modal/index.ts';
+export type { AppModalProps, AppTypedConfirmModalProps } from './overlays/app-modal/index.ts';
+
+// Services
+export { DrawerStore, DrawerService, ModalHost, ToastHost } from './services/drawer/index.ts';
+export type {
+  DrawerState,
+  ToastItem,
+  ModalItem,
+  ToastVariant,
+  ModalVariant,
+} from './services/drawer/index.ts';

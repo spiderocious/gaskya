@@ -49,6 +49,24 @@ const TablesScreen = lazy(() =>
 const ChartsScreen = lazy(() =>
   import('@features/charts/charts-screen.tsx').then((m) => ({ default: m.ChartsScreen })),
 );
+const QuestionsScreen = lazy(() =>
+  import('@features/questions/questions-screen.tsx').then((m) => ({ default: m.QuestionsScreen })),
+);
+const AnswerReviewScreen = lazy(() =>
+  import('@features/answer-review/answer-review-screen.tsx').then((m) => ({ default: m.AnswerReviewScreen })),
+);
+const MediaScreen = lazy(() =>
+  import('@features/media/media-screen.tsx').then((m) => ({ default: m.MediaScreen })),
+);
+const ModalsScreen = lazy(() =>
+  import('@features/modals/modals-screen.tsx').then((m) => ({ default: m.ModalsScreen })),
+);
+const FeedbackScreen = lazy(() =>
+  import('@features/feedback/feedback-screen.tsx').then((m) => ({ default: m.FeedbackScreen })),
+);
+const DrawerScreen = lazy(() =>
+  import('@features/drawer/drawer-screen.tsx').then((m) => ({ default: m.DrawerScreen })),
+);
 
 function Lazy({ children }: { children: ReactNode }) {
   return (
@@ -83,6 +101,12 @@ export function AppRoutes() {
         <Route path={ROUTES.SKELETONS} element={<Lazy><SkeletonsScreen /></Lazy>} />
         <Route path={ROUTES.TABLES} element={<Lazy><TablesScreen /></Lazy>} />
         <Route path={ROUTES.CHARTS} element={<Lazy><ChartsScreen /></Lazy>} />
+        <Route path={ROUTES.QUESTIONS} element={<Lazy><QuestionsScreen /></Lazy>} />
+        <Route path={ROUTES.ANSWER_REVIEW} element={<Lazy><AnswerReviewScreen /></Lazy>} />
+        <Route path={ROUTES.MEDIA} element={<Lazy><MediaScreen /></Lazy>} />
+        <Route path={ROUTES.MODALS} element={<Lazy><ModalsScreen /></Lazy>} />
+        <Route path={ROUTES.FEEDBACK} element={<Lazy><FeedbackScreen /></Lazy>} />
+        <Route path={ROUTES.DRAWER} element={<Lazy><DrawerScreen /></Lazy>} />
         <Route path="*" element={<Navigate to={ROUTES.PALETTE} replace />} />
       </Routes>
     </Shell>
