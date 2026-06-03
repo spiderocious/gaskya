@@ -19,6 +19,36 @@ const MotionScreen = lazy(() =>
 const ButtonsScreen = lazy(() =>
   import('@features/buttons/buttons-screen.tsx').then((m) => ({ default: m.ButtonsScreen })),
 );
+const InputsScreen = lazy(() =>
+  import('@features/inputs/inputs-screen.tsx').then((m) => ({ default: m.InputsScreen })),
+);
+const SelectionScreen = lazy(() =>
+  import('@features/selection/selection-screen.tsx').then((m) => ({ default: m.SelectionScreen })),
+);
+const MoreInputsScreen = lazy(() =>
+  import('@features/more-inputs/more-inputs-screen.tsx').then((m) => ({ default: m.MoreInputsScreen })),
+);
+const DatetimeScreen = lazy(() =>
+  import('@features/datetime/datetime-screen.tsx').then((m) => ({ default: m.DatetimeScreen })),
+);
+const AvatarsScreen = lazy(() =>
+  import('@features/avatars/avatars-screen.tsx').then((m) => ({ default: m.AvatarsScreen })),
+);
+const CardsScreen = lazy(() =>
+  import('@features/cards/cards-screen.tsx').then((m) => ({ default: m.CardsScreen })),
+);
+const ProgressScreen = lazy(() =>
+  import('@features/progress/progress-screen.tsx').then((m) => ({ default: m.ProgressScreen })),
+);
+const SkeletonsScreen = lazy(() =>
+  import('@features/skeletons/skeletons-screen.tsx').then((m) => ({ default: m.SkeletonsScreen })),
+);
+const TablesScreen = lazy(() =>
+  import('@features/tables/tables-screen.tsx').then((m) => ({ default: m.TablesScreen })),
+);
+const ChartsScreen = lazy(() =>
+  import('@features/charts/charts-screen.tsx').then((m) => ({ default: m.ChartsScreen })),
+);
 
 function Lazy({ children }: { children: ReactNode }) {
   return (
@@ -43,6 +73,16 @@ export function AppRoutes() {
         <Route path={ROUTES.GEOMETRY} element={<Lazy><GeometryScreen /></Lazy>} />
         <Route path={ROUTES.MOTION} element={<Lazy><MotionScreen /></Lazy>} />
         <Route path={ROUTES.BUTTONS} element={<Lazy><ButtonsScreen /></Lazy>} />
+        <Route path={ROUTES.INPUTS} element={<Lazy><InputsScreen /></Lazy>} />
+        <Route path={ROUTES.SELECTION} element={<Lazy><SelectionScreen /></Lazy>} />
+        <Route path={ROUTES.MORE_INPUTS} element={<Lazy><MoreInputsScreen /></Lazy>} />
+        <Route path={ROUTES.DATETIME} element={<Lazy><DatetimeScreen /></Lazy>} />
+        <Route path={ROUTES.AVATARS} element={<Lazy><AvatarsScreen /></Lazy>} />
+        <Route path={ROUTES.CARDS} element={<Lazy><CardsScreen /></Lazy>} />
+        <Route path={ROUTES.PROGRESS} element={<Lazy><ProgressScreen /></Lazy>} />
+        <Route path={ROUTES.SKELETONS} element={<Lazy><SkeletonsScreen /></Lazy>} />
+        <Route path={ROUTES.TABLES} element={<Lazy><TablesScreen /></Lazy>} />
+        <Route path={ROUTES.CHARTS} element={<Lazy><ChartsScreen /></Lazy>} />
         <Route path="*" element={<Navigate to={ROUTES.PALETTE} replace />} />
       </Routes>
     </Shell>
