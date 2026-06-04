@@ -1,4 +1,4 @@
-import { ModalHost, ToastHost } from '@gaskya/ui';
+import { ModalHost, ToastHost, BannerHost } from '@gaskya/ui';
 
 import { AppProviders } from './app.provider.tsx';
 import { AppRoutes } from './app.routes.tsx';
@@ -9,6 +9,7 @@ export function App() {
       <AppRoutes />
       <ModalHost />
       <ToastHost />
+      <BannerHost />
     </AppProviders>
   );
 }

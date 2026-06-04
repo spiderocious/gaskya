@@ -1,85 +1,160 @@
-// Imperative toast + modal store — a plain pub-sub class, no framework dep.
-// Mirrors the Solon drawer pattern; hosts subscribe via useSyncExternalStore.
+import type { ReactNode } from 'react';
 
-export type ToastVariant = 'default' | 'good' | 'warn' | 'crit';
+import type { FeedbackTone } from '../../overlays/app-feedback/index.ts';
+import type { ModalPosition } from '../../overlays/app-modal/index.ts';
 
-export interface ToastItem {
+// The drawer store backs the imperative DrawerService. Three queues:
+//   toasts  — auto-dismissing (or sticky) pills stacked in any of 6 zones
+//   banners — persistent strips at top or bottom of the viewport
+//   modal   — at most one open modal (standard / danger / critical / custom)
+// Pub-sub so the hosts' useSyncExternalStore stays in sync with no framework dep.
+
+// ============== Toast ==============
+
+export type ToastPosition =
+  | 'top-left'
+  | 'top-center'
+  | 'top-right'
+  | 'bottom-left'
+  | 'bottom-center'
+  | 'bottom-right';
+
+export interface ToastEntry {
   id: string;
-  title: string;
-  subtitle?: string;
-  action?: string;
-  variant?: ToastVariant;
-  durationMs?: number;
+  tone: FeedbackTone;
+  message: ReactNode;
+  subtitle?: ReactNode;
+  action?: { label: string; onClick: () => void };
+  durationMs: number;
+  sticky: boolean;
+  position: ToastPosition;
 }
 
-export type ModalVariant = 'confirm' | 'crit';
+// ============== Modal ==============
 
-export interface ModalItem {
-  id: string;
-  title: string;
-  body: string;
-  variant?: ModalVariant;
-  confirmLabel?: string;
-  cancelLabel?: string;
-  onConfirm?: () => void;
+interface ModalEntryBase {
+  position: ModalPosition;
+  closeOnOutsideClick: boolean;
+  closeOnEscape: boolean;
+  sticky: boolean;
   onCancel?: () => void;
+  children?: ReactNode;
 }
 
-export interface DrawerState {
-  toasts: ToastItem[];
-  modal: ModalItem | null;
+export interface StandardModalEntry extends ModalEntryBase {
+  kind: 'standard' | 'danger';
+  title: ReactNode;
+  description?: ReactNode;
+  confirmLabel: string;
+  cancelLabel?: string;
+  onConfirm: () => void;
+}
+
+export interface CriticalModalEntry extends ModalEntryBase {
+  kind: 'critical';
+  title: ReactNode;
+  description?: ReactNode;
+  confirmPhrase: string;
+  confirmPrompt: ReactNode;
+  confirmLabel: string;
+  cancelLabel?: string;
+  onConfirm: () => void;
+}
+
+export interface CustomModalEntry extends ModalEntryBase {
+  kind: 'custom';
+  body: ReactNode;
+  hideCloseButton: boolean;
+}
+
+export type ModalEntry = StandardModalEntry | CriticalModalEntry | CustomModalEntry;
+
+// ============== Banner ==============
+
+export type BannerPosition = 'top' | 'bottom';
+
+export interface BannerEntry {
+  id: string;
+  tone: FeedbackTone;
+  title: ReactNode;
+  description?: ReactNode;
+  cta?: { label: string; onClick: () => void };
+  icon?: ReactNode;
+  position: BannerPosition;
+  sticky: boolean;
+  durationMs: number;
+}
+
+// ============== Store ==============
+
+interface DrawerState {
+  toasts: readonly ToastEntry[];
+  banners: readonly BannerEntry[];
+  modal: ModalEntry | null;
 }
 
 type Listener = () => void;
 
-export class DrawerStore {
-  private state: DrawerState = { toasts: [], modal: null };
+class DrawerStore {
+  private state: DrawerState = { toasts: [], banners: [], modal: null };
   private listeners = new Set<Listener>();
-  private seq = 0;
+  private nextId = 0;
 
-  getState(): DrawerState {
-    return this.state;
-  }
+  getState = (): DrawerState => this.state;
 
-  subscribe(listener: Listener): () => void {
+  subscribe = (listener: Listener): (() => void) => {
     this.listeners.add(listener);
     return () => {
       this.listeners.delete(listener);
     };
-  }
+  };
 
-  private notify(): void {
+  private emit() {
     this.listeners.forEach((l) => l());
   }
 
-  private setState(next: Partial<DrawerState>): void {
+  private set(next: Partial<DrawerState>) {
     this.state = { ...this.state, ...next };
-    this.notify();
+    this.emit();
   }
 
-  private nextId(prefix: string): string {
-    this.seq += 1;
-    return `${prefix}-${this.seq}`;
-  }
-
-  toast(item: Omit<ToastItem, 'id'>): void {
-    const id = this.nextId('toast');
-    const toast: ToastItem = { id, durationMs: 4000, ...item };
-    this.setState({ toasts: [...this.state.toasts, toast] });
-    if (toast.durationMs && toast.durationMs > 0) {
-      setTimeout(() => this.dismissToast(id), toast.durationMs);
+  // ----- Toasts -----
+  pushToast = (entry: Omit<ToastEntry, 'id'>): string => {
+    const id = `t-${this.nextId++}`;
+    this.set({ toasts: [...this.state.toasts, { id, ...entry }] });
+    if (!entry.sticky && entry.durationMs > 0) {
+      setTimeout(() => this.dismissToast(id), entry.durationMs);
     }
-  }
+    return id;
+  };
 
-  dismissToast(id: string): void {
-    this.setState({ toasts: this.state.toasts.filter((t) => t.id !== id) });
-  }
+  dismissToast = (id: string): void => {
+    this.set({ toasts: this.state.toasts.filter((t) => t.id !== id) });
+  };
 
-  showModal(item: Omit<ModalItem, 'id'>): void {
-    this.setState({ modal: { id: this.nextId('modal'), ...item } });
-  }
+  // ----- Banners -----
+  pushBanner = (entry: Omit<BannerEntry, 'id'>): string => {
+    const id = `b-${this.nextId++}`;
+    this.set({ banners: [...this.state.banners, { id, ...entry }] });
+    if (!entry.sticky && entry.durationMs > 0) {
+      setTimeout(() => this.dismissBanner(id), entry.durationMs);
+    }
+    return id;
+  };
 
-  dismissModal(): void {
-    this.setState({ modal: null });
-  }
+  dismissBanner = (id: string): void => {
+    this.set({ banners: this.state.banners.filter((b) => b.id !== id) });
+  };
+
+  // ----- Modal -----
+  openModal = (entry: ModalEntry): void => {
+    this.set({ modal: entry });
+  };
+
+  closeModal = (): void => {
+    this.set({ modal: null });
+  };
 }
+
+export const drawerStore = new DrawerStore();
+export { DrawerStore };

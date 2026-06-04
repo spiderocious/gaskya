@@ -2,63 +2,80 @@ import { useSyncExternalStore } from 'react';
 import { createPortal } from 'react-dom';
 
 import { cn } from '../../utils/cn.ts';
+import { AppToast } from '../../overlays/app-feedback/index.ts';
 import { DrawerService } from './drawer-service.ts';
+import { drawerStore, type ToastEntry, type ToastPosition } from './drawer-store.ts';
+import { SwipeableToast } from './swipeable-toast.tsx';
 
-const KEEL = {
-  default: 'var(--good)',
-  good: 'var(--good)',
-  warn: 'var(--warn)',
-  crit: 'var(--crit)',
-} as const;
+const POSITIONS: readonly ToastPosition[] = [
+  'top-left',
+  'top-center',
+  'top-right',
+  'bottom-left',
+  'bottom-center',
+  'bottom-right',
+];
 
-/** Mount once at the app root. Renders stacked imperative toasts. */
+const ZONE: Record<ToastPosition, string> = {
+  'top-left': 'top-6 left-6 items-start',
+  'top-center': 'top-6 left-1/2 -translate-x-1/2 items-center',
+  'top-right': 'top-6 right-6 items-end',
+  'bottom-left': 'bottom-6 left-6 items-start flex-col-reverse',
+  'bottom-center': 'bottom-6 left-1/2 -translate-x-1/2 items-center flex-col-reverse',
+  'bottom-right': 'bottom-6 right-6 items-end flex-col-reverse',
+};
+
+/**
+ * ToastHost — mount once at the app root. Renders the toast queue grouped into
+ * six position zones via createPortal; each toast is swipe-to-dismiss unless
+ * sticky.
+ */
 export function ToastHost() {
-  const { toasts } = useSyncExternalStore(
-    (cb) => DrawerService.getStore().subscribe(cb),
-    () => DrawerService.getStore().getState(),
-  );
-
-  if (toasts.length === 0) return null;
+  const state = useSyncExternalStore(drawerStore.subscribe, drawerStore.getState);
+  if (state.toasts.length === 0 || typeof document === 'undefined') return null;
 
   return createPortal(
-    <div className="fixed bottom-4 right-4 z-50 flex flex-col items-end gap-2" aria-live="polite">
-      {toasts.map((toast) => (
-        <div
-          key={toast.id}
-          className={cn('flex min-w-[320px] max-w-[420px] flex-col gap-1 rounded-[14px] border-l-[3px] px-4 py-3')}
-          style={{
-            background: 'var(--ink)',
-            borderLeftColor: KEEL[toast.variant ?? 'default'],
-            boxShadow: '0 10px 30px -14px rgba(44,38,32,0.5)',
-          }}
-          role="status"
-        >
-          <div className="flex items-start justify-between gap-3">
-            <span className="text-[13.5px] font-medium" style={{ color: 'var(--paper)' }}>
-              {toast.title}
-            </span>
-            <button
-              onClick={() => DrawerService.dismissToast(toast.id)}
-              className="shrink-0 font-mono text-[12px]"
-              style={{ color: 'rgba(246,241,236,0.5)' }}
-              aria-label="Dismiss"
-            >
-              ×
-            </button>
+    <>
+      {POSITIONS.map((pos) => {
+        const zone = state.toasts.filter((t) => t.position === pos);
+        if (zone.length === 0) return null;
+        return (
+          <div key={pos} className={cn('pointer-events-none fixed z-[60] flex max-w-[calc(100vw-3rem)] flex-col gap-3', ZONE[pos])}>
+            {zone.map((t) => (
+              <ToastSlot key={t.id} toast={t} />
+            ))}
           </div>
-          {toast.subtitle ? (
-            <span className="font-serif text-[11.5px] italic" style={{ color: 'rgba(246,241,236,0.7)' }}>
-              {toast.subtitle}
-            </span>
-          ) : null}
-          {toast.action ? (
-            <span className="mt-1 text-left text-[12px] underline" style={{ color: 'rgba(246,241,236,0.8)' }}>
-              {toast.action}
-            </span>
-          ) : null}
-        </div>
-      ))}
-    </div>,
+        );
+      })}
+    </>,
     document.body,
+  );
+}
+
+function ToastSlot({ toast }: { toast: ToastEntry }) {
+  const action = toast.action;
+  return (
+    <div className="pointer-events-auto">
+      <SwipeableToast disabled={toast.sticky} onDismiss={() => DrawerService.dismissToast(toast.id)}>
+        <AppToast
+          tone={toast.tone}
+          {...(toast.subtitle !== undefined ? { subtitle: toast.subtitle } : {})}
+          onDismiss={() => DrawerService.dismissToast(toast.id)}
+          {...(action !== undefined
+            ? {
+                action: {
+                  label: action.label,
+                  onClick: () => {
+                    action.onClick();
+                    DrawerService.dismissToast(toast.id);
+                  },
+                },
+              }
+            : {})}
+        >
+          {toast.message}
+        </AppToast>
+      </SwipeableToast>
+    </div>
   );
 }

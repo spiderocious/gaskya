@@ -1,2 +1,8 @@
-export { AppToast, AppBanner } from './app-feedback.tsx';
-export type { FeedbackTone, AppToastProps, AppBannerProps } from './app-feedback.tsx';
+export { AppToast, AppBanner, AppInlineAlert } from './app-feedback.tsx';
+export type {
+  FeedbackTone,
+  FeedbackAction,
+  AppToastProps,
+  AppBannerProps,
+  AppInlineAlertProps,
+} from './app-feedback.tsx';

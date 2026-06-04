@@ -78,12 +78,39 @@ export type {
 } from './display/app-state/index.ts';
 
 // Data
-export { AppTable } from './data/app-table/index.ts';
-export type { AppTableColumn, AppTableProps } from './data/app-table/index.ts';
+export { AppTable, AppComparisonTable, AppPagination } from './data/app-table/index.ts';
+export type {
+  AppTableColumn,
+  AppTableProps,
+  ComparisonRow,
+  AppComparisonTableProps,
+  AppPaginationProps,
+} from './data/app-table/index.ts';
 export { AppSparkline, AppTrendLine } from './data/app-trend/index.ts';
 export type { AppSparklineProps, AppTrendLineProps } from './data/app-trend/index.ts';
 export { AppFunnelStepper } from './data/app-funnel/index.ts';
 export type { FunnelStage, AppFunnelStepperProps } from './data/app-funnel/index.ts';
+export {
+  AppBarChart,
+  AppStackedBar,
+  AppDonut,
+  AppHeatmap,
+  AppBullet,
+  AppRadar,
+  AppDistribution,
+} from './data/app-charts/index.ts';
+export type {
+  BarDatum,
+  AppBarChartProps,
+  StackedRow,
+  AppStackedBarProps,
+  AppDonutProps,
+  HeatRow,
+  AppHeatmapProps,
+  AppBulletProps,
+  AppRadarProps,
+  AppDistributionProps,
+} from './data/app-charts/index.ts';
 export {
   AppQuestionCard,
   AppWorkedSolution,
@@ -111,17 +138,52 @@ export type {
 // Overlays
 export { AppTooltip, AppPopover } from './overlays/app-overlay/index.ts';
 export type { AppTooltipProps, AppPopoverProps } from './overlays/app-overlay/index.ts';
-export { AppToast, AppBanner } from './overlays/app-feedback/index.ts';
-export type { FeedbackTone, AppToastProps, AppBannerProps } from './overlays/app-feedback/index.ts';
-export { AppModal, AppTypedConfirmModal } from './overlays/app-modal/index.ts';
-export type { AppModalProps, AppTypedConfirmModalProps } from './overlays/app-modal/index.ts';
+export { AppToast, AppBanner, AppInlineAlert } from './overlays/app-feedback/index.ts';
+export type {
+  FeedbackTone,
+  FeedbackAction,
+  AppToastProps,
+  AppBannerProps,
+  AppInlineAlertProps,
+} from './overlays/app-feedback/index.ts';
+export {
+  AppModal,
+  AppCriticalModal,
+  AppCustomModal,
+  AppTypedConfirmModal,
+} from './overlays/app-modal/index.ts';
+export type {
+  ModalIntent,
+  ModalPosition,
+  SharedModalConfig,
+  AppModalProps,
+  AppCriticalModalProps,
+  AppCustomModalProps,
+  AppTypedConfirmModalProps,
+} from './overlays/app-modal/index.ts';
 
 // Services
-export { DrawerStore, DrawerService, ModalHost, ToastHost } from './services/drawer/index.ts';
+export {
+  DrawerStore,
+  drawerStore,
+  DrawerService,
+  ToastHost,
+  BannerHost,
+  ModalHost,
+  SwipeableToast,
+} from './services/drawer/index.ts';
 export type {
-  DrawerState,
-  ToastItem,
-  ModalItem,
-  ToastVariant,
-  ModalVariant,
+  ToastPosition,
+  ToastEntry,
+  BannerPosition,
+  BannerEntry,
+  ModalEntry,
+  StandardModalEntry,
+  CriticalModalEntry,
+  CustomModalEntry,
+  ToastOptions,
+  BannerOptions,
+  ConfirmOptions,
+  CriticalOptions,
+  CustomModalOptions,
 } from './services/drawer/index.ts';

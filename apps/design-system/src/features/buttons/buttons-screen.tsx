@@ -2,9 +2,6 @@ import { AppButton } from '@gaskya/ui';
 
 import { ScreenHeader, Scene, SectionBreak, Row, Note } from '@shared/preview-canvas.tsx';
 
-/**
- * Visual spec: design-system/projects/gaskya/preview/10-buttons.html
- */
 export function ButtonsScreen() {
   return (
     <div>
