@@ -1,71 +1,311 @@
-import { useState, type ReactNode } from 'react';
+import {
+  useEffect,
+  useRef,
+  useState,
+  type MouseEvent,
+  type ReactNode,
+} from 'react';
 import { createPortal } from 'react-dom';
 
 import { cn } from '../../utils/cn.ts';
 import { AppButton } from '../../primitives/app-button/index.ts';
 
 /**
- * AppModal / AppTypedConfirmModal — overlays via createPortal to document.body.
+ * Modal family — ModalShell primitive + Modal / CriticalModal / CustomModal.
  *
  * Visual spec: design-system/projects/gaskya/preview/40-modals.html
- * The CRITICAL idiom is mandatory: AppTypedConfirmModal guards an irreversible
- * action behind typing a literal word (e.g. DELETE).
+ *
+ * Positions turn the modal into sheets/drawers: center (confirm), top/bottom
+ * (sheets), left/right (side drawers). closeOnOutsideClick / closeOnEscape /
+ * sticky control dismissal. The CRITICAL idiom (type-to-confirm) is mandatory.
  */
-export interface AppModalProps {
-  open: boolean;
-  title: ReactNode;
-  children?: ReactNode;
-  footer?: ReactNode;
-  critical?: boolean;
-  onClose: () => void;
-  className?: string;
+export type ModalIntent = 'standard' | 'danger';
+export type ModalPosition = 'center' | 'top' | 'bottom' | 'left' | 'right';
+
+export interface SharedModalConfig {
+  /** Where on screen the modal renders. Default: 'center'. */
+  position?: ModalPosition;
+  /** Clicking the scrim closes the modal. Default: true. Ignored when sticky. */
+  closeOnOutsideClick?: boolean;
+  /** Pressing Escape closes the modal. Default: true. Ignored when sticky. */
+  closeOnEscape?: boolean;
+  /** Only confirm/cancel dismisses — no scrim click, no Escape, no X. */
+  sticky?: boolean;
 }
 
-export function AppModal({ open, title, children, footer, critical, onClose, className }: AppModalProps) {
-  if (!open) return null;
+const POSITION_ALIGN: Record<ModalPosition, string> = {
+  center: 'items-center justify-center p-4',
+  top: 'items-start justify-center',
+  bottom: 'items-end justify-center',
+  left: 'items-stretch justify-start',
+  right: 'items-stretch justify-end',
+};
+
+const POSITION_PANEL: Record<ModalPosition, string> = {
+  center: 'w-full max-w-[440px] rounded-[22px] p-6',
+  top: 'w-full max-w-[680px] rounded-b-[22px] p-6',
+  bottom: 'w-full max-w-[680px] rounded-t-[22px] p-6',
+  left: 'h-full w-full max-w-[420px] rounded-r-[22px] overflow-y-auto p-6',
+  right: 'h-full w-full max-w-[420px] rounded-l-[22px] overflow-y-auto p-6',
+};
+
+interface ModalShellProps extends SharedModalConfig {
+  open: boolean;
+  onClose: () => void;
+  role?: 'dialog' | 'alertdialog';
+  critical?: boolean;
+  className?: string;
+  children: ReactNode;
+}
+
+function ModalShell({
+  open,
+  onClose,
+  role = 'dialog',
+  critical,
+  position = 'center',
+  closeOnOutsideClick = true,
+  closeOnEscape = true,
+  sticky = false,
+  className,
+  children,
+}: ModalShellProps) {
+  useEffect(() => {
+    if (!open || sticky || !closeOnEscape) return undefined;
+    function handler(e: KeyboardEvent) {
+      if (e.key === 'Escape') onClose();
+    }
+    document.addEventListener('keydown', handler);
+    return () => document.removeEventListener('keydown', handler);
+  }, [open, sticky, closeOnEscape, onClose]);
+
+  if (!open || typeof document === 'undefined') return null;
+
+  function handleScrim() {
+    if (sticky || !closeOnOutsideClick) return;
+    onClose();
+  }
+  function stop(e: MouseEvent<HTMLDivElement>) {
+    e.stopPropagation();
+  }
+
   return createPortal(
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center p-4"
+      role={role}
+      aria-modal="true"
+      onClick={handleScrim}
+      className={cn('fixed inset-0 z-50 flex', POSITION_ALIGN[position])}
       style={{ background: 'rgba(44,38,32,0.28)' }}
-      onClick={(e) => {
-        if (e.target === e.currentTarget) onClose();
-      }}
     >
       <div
-        className={cn('w-full max-w-[420px] overflow-hidden rounded-[22px]', className)}
+        onClick={stop}
+        className={cn('relative', POSITION_PANEL[position], className)}
         style={{
           background: 'var(--sheet)',
           border: critical ? '1px solid var(--crit-edge)' : '1px solid var(--hair)',
           boxShadow: '0 24px 60px -24px rgba(44,38,32,0.4)',
         }}
-        role="dialog"
-        aria-modal="true"
       >
-        {critical ? (
-          <div
-            className="border-b px-6 py-3 font-mono text-[11px] font-semibold uppercase tracking-[0.1em]"
-            style={{ background: 'var(--crit-soft)', borderColor: 'var(--crit-edge)', color: 'var(--crit)' }}
-          >
-            Can't be undone
-          </div>
-        ) : null}
-        <div className="p-6">
-          <div className="mb-2 font-serif text-[18px] font-medium" style={{ color: 'var(--ink)' }}>
-            {title}
-          </div>
-          {children ? (
-            <div className="text-[13px] leading-relaxed" style={{ color: 'var(--ink-3)' }}>
-              {children}
-            </div>
-          ) : null}
-        </div>
-        {footer ? <div className="flex items-center gap-3 px-6 pb-5">{footer}</div> : null}
+        {children}
       </div>
     </div>,
     document.body,
   );
 }
 
+// ============== Modal (standard / danger confirm) ==============
+
+export interface AppModalProps extends SharedModalConfig {
+  open: boolean;
+  onClose: () => void;
+  title: ReactNode;
+  description?: ReactNode;
+  intent?: ModalIntent;
+  confirmLabel: string;
+  onConfirm: () => void;
+  cancelLabel?: string;
+  children?: ReactNode;
+  className?: string;
+}
+
+export function AppModal({
+  open,
+  onClose,
+  title,
+  description,
+  intent = 'standard',
+  confirmLabel,
+  onConfirm,
+  cancelLabel = 'Cancel',
+  children,
+  className,
+  ...shared
+}: AppModalProps) {
+  return (
+    <ModalShell open={open} onClose={onClose} role="dialog" {...(className !== undefined ? { className } : {})} {...shared}>
+      <h2 className="m-0 mb-1.5 font-serif text-[18px] font-medium tracking-[-0.01em]" style={{ color: 'var(--ink)' }}>
+        {title}
+      </h2>
+      {description !== undefined && description !== null ? (
+        <p className="m-0 mb-[18px] text-[13px] leading-relaxed" style={{ color: 'var(--ink-3)' }}>
+          {description}
+        </p>
+      ) : null}
+      {children}
+      <div className="mt-[18px] flex items-center gap-3">
+        <AppButton variant="secondary" onClick={onClose}>
+          {cancelLabel}
+        </AppButton>
+        <AppButton variant={intent === 'danger' ? 'danger' : 'primary'} className="ml-auto" onClick={onConfirm}>
+          {confirmLabel}
+        </AppButton>
+      </div>
+    </ModalShell>
+  );
+}
+
+// ============== CriticalModal (type-to-confirm) ==============
+
+export interface AppCriticalModalProps extends SharedModalConfig {
+  open: boolean;
+  onClose: () => void;
+  title: ReactNode;
+  description?: ReactNode;
+  /** Word/phrase the user must type, case-sensitive. */
+  confirmPhrase: string;
+  /** Label above the input. */
+  confirmPrompt: ReactNode;
+  confirmLabel: string;
+  onConfirm: () => void;
+  cancelLabel?: string;
+  children?: ReactNode;
+  className?: string;
+}
+
+export function AppCriticalModal({
+  open,
+  onClose,
+  title,
+  description,
+  confirmPhrase,
+  confirmPrompt,
+  confirmLabel,
+  onConfirm,
+  cancelLabel = 'Cancel',
+  children,
+  className,
+  closeOnOutsideClick = false,
+  ...shared
+}: AppCriticalModalProps) {
+  const [typed, setTyped] = useState('');
+  const inputRef = useRef<HTMLInputElement>(null);
+  const matched = typed === confirmPhrase;
+
+  useEffect(() => {
+    if (open) {
+      setTyped('');
+      const id = requestAnimationFrame(() => inputRef.current?.focus());
+      return () => cancelAnimationFrame(id);
+    }
+    return undefined;
+  }, [open]);
+
+  return (
+    <ModalShell
+      open={open}
+      onClose={onClose}
+      role="alertdialog"
+      critical
+      closeOnOutsideClick={closeOnOutsideClick}
+      className={className ?? ''}
+      {...shared}
+    >
+      <span
+        className="mb-3.5 inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 font-mono text-[11px] font-bold uppercase tracking-[0.12em]"
+        style={{ background: 'var(--crit-soft)', color: 'var(--crit)' }}
+      >
+        Can't be undone
+      </span>
+      <h2 className="m-0 mb-1.5 font-serif text-[18px] font-medium tracking-[-0.01em]" style={{ color: 'var(--ink)' }}>
+        {title}
+      </h2>
+      {description !== undefined && description !== null ? (
+        <p className="m-0 mb-[18px] text-[13px] leading-relaxed" style={{ color: 'var(--ink-3)' }}>
+          {description}
+        </p>
+      ) : null}
+      {children}
+      <div className="my-3.5 rounded-[16px] px-[18px] py-4" style={{ background: 'var(--paper)' }}>
+        <p className="m-0 mb-2 text-[12px] font-bold" style={{ color: 'var(--ink-3)' }}>
+          {confirmPrompt}
+        </p>
+        <input
+          ref={inputRef}
+          type="text"
+          value={typed}
+          onChange={(e) => setTyped(e.target.value)}
+          placeholder={confirmPhrase}
+          className="w-full rounded-[12px] border-2 px-3.5 py-3 font-mono text-[15px] tracking-[0.02em] outline-none"
+          style={{
+            background: matched ? 'var(--crit-soft)' : 'var(--sheet)',
+            borderColor: matched ? 'var(--crit)' : 'var(--hair)',
+            color: matched ? 'var(--crit)' : 'var(--ink)',
+          }}
+        />
+      </div>
+      <div className="mt-[18px] flex items-center gap-3">
+        <AppButton variant="secondary" onClick={onClose}>
+          {cancelLabel}
+        </AppButton>
+        <AppButton variant="danger" className="ml-auto" disabled={!matched} onClick={onConfirm}>
+          {confirmLabel}
+        </AppButton>
+      </div>
+    </ModalShell>
+  );
+}
+
+// ============== CustomModal (arbitrary body) ==============
+
+export interface AppCustomModalProps extends SharedModalConfig {
+  open: boolean;
+  onClose: () => void;
+  children: ReactNode;
+  hideCloseButton?: boolean;
+  className?: string;
+}
+
+export function AppCustomModal({
+  open,
+  onClose,
+  children,
+  hideCloseButton = false,
+  className,
+  sticky,
+  ...shared
+}: AppCustomModalProps) {
+  return (
+    <ModalShell open={open} onClose={onClose} role="dialog" {...(sticky !== undefined ? { sticky } : {})} {...(className !== undefined ? { className } : {})} {...shared}>
+      {hideCloseButton || sticky === true ? null : (
+        <button
+          type="button"
+          onClick={onClose}
+          aria-label="Close"
+          className="absolute right-4 top-4 inline-flex h-8 w-8 items-center justify-center rounded-full"
+          style={{ background: 'var(--paper)', color: 'var(--ink)' }}
+        >
+          <svg viewBox="0 0 16 16" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden>
+            <line x1="3" y1="3" x2="13" y2="13" />
+            <line x1="13" y1="3" x2="3" y2="13" />
+          </svg>
+        </button>
+      )}
+      <div className="relative">{children}</div>
+    </ModalShell>
+  );
+}
+
+// Back-compat alias: the original AppTypedConfirmModal maps to AppCriticalModal.
 export interface AppTypedConfirmModalProps {
   open: boolean;
   title: ReactNode;
@@ -87,44 +327,21 @@ export function AppTypedConfirmModal({
   onConfirm,
   onClose,
 }: AppTypedConfirmModalProps) {
-  const [typed, setTyped] = useState('');
-  const armed = typed === confirmWord;
   return (
-    <AppModal
+    <AppCriticalModal
       open={open}
-      critical
-      title={title}
       onClose={onClose}
-      footer={
+      onConfirm={onConfirm}
+      title={title}
+      {...(body !== undefined ? { description: body } : {})}
+      confirmPhrase={confirmWord}
+      confirmPrompt={
         <>
-          <AppButton variant="secondary" onClick={onClose}>
-            {cancelLabel}
-          </AppButton>
-          <AppButton
-            variant="danger"
-            className="ml-auto"
-            disabled={!armed}
-            onClick={() => {
-              onConfirm();
-              setTyped('');
-            }}
-          >
-            {confirmLabel}
-          </AppButton>
+          Type <span style={{ color: 'var(--crit)' }}>{confirmWord}</span> to confirm
         </>
       }
-    >
-      {body ? <div className="mb-4">{body}</div> : null}
-      <label className="mb-1.5 block text-[11.5px] font-semibold" style={{ color: 'var(--ink-3)' }}>
-        Type <span style={{ color: 'var(--crit)' }}>{confirmWord}</span> to confirm
-      </label>
-      <input
-        value={typed}
-        onChange={(e) => setTyped(e.target.value)}
-        placeholder={confirmWord}
-        className="h-[46px] w-full rounded-[14px] border bg-[var(--sheet)] px-4 font-mono text-[15px] outline-none focus:border-[var(--crit)] focus:shadow-[0_0_0_4px_var(--crit-soft)]"
-        style={{ borderColor: 'var(--hair)', color: 'var(--ink)' }}
-      />
-    </AppModal>
+      confirmLabel={confirmLabel}
+      cancelLabel={cancelLabel}
+    />
   );
 }

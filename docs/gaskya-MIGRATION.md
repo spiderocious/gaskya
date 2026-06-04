@@ -69,15 +69,27 @@ square shapes), `AppCard` / `AppResultCard`, `AppTrack` / `AppProgressRing` / `A
 `AppAudioPlayer` / `AppVideoPlayer` / `AppTranscript` (presentational — see below).
 
 **Overlays** (`overlays/`):
-`AppTooltip` / `AppPopover` (hand-rolled), `AppToast` / `AppBanner` (inline),
-`AppModal` / `AppTypedConfirmModal` (createPortal; the mandatory irreversible idiom — typed
-`DELETE` to confirm).
+`AppTooltip` / `AppPopover` (hand-rolled); feedback — `AppToast` / `AppBanner` /
+`AppInlineAlert` (tones: default · good · warn · crit · accent); modals — a shared
+`ModalShell` primitive driving `AppModal` (intent: standard/danger), `AppCriticalModal`
+(type-to-confirm — the mandatory irreversible idiom), `AppCustomModal` (arbitrary body + X),
+and the back-compat `AppTypedConfirmModal`. Every modal supports **five positions**
+(`center` / `top` / `bottom` → sheets / `left` / `right` → side drawers) and
+`closeOnOutsideClick` · `closeOnEscape` · `sticky`.
 
-**Services** (`services/drawer/`):
-`DrawerStore` (pub-sub), `DrawerService` (imperative singleton), `ModalHost`, `ToastHost`
-(via `useSyncExternalStore` + `createPortal`). Mirrors the Solon drawer pattern, adapted to
-GasKya tokens and `.ts` imports. **`<ModalHost />` + `<ToastHost />` are mounted at the
-viewer root** (`apps/design-system/src/app.tsx`); mount them once at any consuming app's root.
+**Services** (`services/drawer/`) — the full imperative layer (modelled on the Gbedity
+drawer, adapted to GasKya tokens + `.ts` imports):
+- `drawerStore` — pub-sub store with **three queues** (toasts, banners, modal).
+- `DrawerService` — `toast(msg, {tone, position, sticky, durationMs, subtitle, action})` with
+  **six toast zones** (top/bottom × left/center/right); `banner(title, {tone, position
+  top/bottom, sticky, durationMs, cta, icon, description})`; `confirm(title, {destructive,
+  …})`; `critical(title, {confirmPhrase, confirmPrompt, …})`; `openModal(body, {position,
+  sticky, hideCloseButton, …})`; plus `dismissToast` / `dismissBanner` / `closeModal`.
+- `SwipeableToast` — drag-to-dismiss (pointer-capture, 30% commit threshold, spring-back);
+  disabled for sticky toasts.
+- Hosts: `ToastHost` (six zones), `BannerHost` (top/bottom, full-width stack), `ModalHost`
+  (delegates to the right modal kind). **All three are mounted at the viewer root**
+  (`apps/design-system/src/app.tsx`); mount the same three once at any consuming app's root.
 
 ---
 
@@ -123,8 +135,8 @@ Build them in `apps/web` using the components above; visual spec in the Studio f
 
 ## Manual work remaining
 
-- Mount `<ModalHost />` + `<ToastHost />` at the root of `apps/web` / `apps/admin-web` when
-  those apps start using `DrawerService`.
+- Mount `<ModalHost />` + `<ToastHost />` + `<BannerHost />` at the root of `apps/web` /
+  `apps/admin-web` when those apps start using `DrawerService`.
 - Wire real media playback behind the presentational players.
 - The figure-question SVGs (diagrammatic/abstract) come from the generation engine; the UI
   renders whatever SVG/markup the item carries.

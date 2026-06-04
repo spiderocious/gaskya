@@ -1,2 +1,15 @@
-export { AppModal, AppTypedConfirmModal } from './app-modal.tsx';
-export type { AppModalProps, AppTypedConfirmModalProps } from './app-modal.tsx';
+export {
+  AppModal,
+  AppCriticalModal,
+  AppCustomModal,
+  AppTypedConfirmModal,
+} from './app-modal.tsx';
+export type {
+  ModalIntent,
+  ModalPosition,
+  SharedModalConfig,
+  AppModalProps,
+  AppCriticalModalProps,
+  AppCustomModalProps,
+  AppTypedConfirmModalProps,
+} from './app-modal.tsx';
