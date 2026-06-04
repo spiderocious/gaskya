@@ -52,11 +52,23 @@ const ChartsScreen = lazy(() =>
 const QuestionsScreen = lazy(() =>
   import('@features/questions/questions-screen.tsx').then((m) => ({ default: m.QuestionsScreen })),
 );
+const FigureQuestionsScreen = lazy(() =>
+  import('@features/figure-questions/figure-questions-screen.tsx').then((m) => ({ default: m.FigureQuestionsScreen })),
+);
+const QuestionBankScreen = lazy(() =>
+  import('@features/question-bank/question-bank-screen.tsx').then((m) => ({ default: m.QuestionBankScreen })),
+);
 const AnswerReviewScreen = lazy(() =>
   import('@features/answer-review/answer-review-screen.tsx').then((m) => ({ default: m.AnswerReviewScreen })),
 );
 const MediaScreen = lazy(() =>
   import('@features/media/media-screen.tsx').then((m) => ({ default: m.MediaScreen })),
+);
+const TooltipsScreen = lazy(() =>
+  import('@features/tooltips/tooltips-screen.tsx').then((m) => ({ default: m.TooltipsScreen })),
+);
+const NavigationScreen = lazy(() =>
+  import('@features/navigation/navigation-screen.tsx').then((m) => ({ default: m.NavigationScreen })),
 );
 const ModalsScreen = lazy(() =>
   import('@features/modals/modals-screen.tsx').then((m) => ({ default: m.ModalsScreen })),
@@ -102,8 +114,12 @@ export function AppRoutes() {
         <Route path={ROUTES.TABLES} element={<Lazy><TablesScreen /></Lazy>} />
         <Route path={ROUTES.CHARTS} element={<Lazy><ChartsScreen /></Lazy>} />
         <Route path={ROUTES.QUESTIONS} element={<Lazy><QuestionsScreen /></Lazy>} />
+        <Route path={ROUTES.FIGURE_QUESTIONS} element={<Lazy><FigureQuestionsScreen /></Lazy>} />
+        <Route path={ROUTES.QUESTION_BANK} element={<Lazy><QuestionBankScreen /></Lazy>} />
         <Route path={ROUTES.ANSWER_REVIEW} element={<Lazy><AnswerReviewScreen /></Lazy>} />
         <Route path={ROUTES.MEDIA} element={<Lazy><MediaScreen /></Lazy>} />
+        <Route path={ROUTES.TOOLTIPS} element={<Lazy><TooltipsScreen /></Lazy>} />
+        <Route path={ROUTES.NAVIGATION} element={<Lazy><NavigationScreen /></Lazy>} />
         <Route path={ROUTES.MODALS} element={<Lazy><ModalsScreen /></Lazy>} />
         <Route path={ROUTES.FEEDBACK} element={<Lazy><FeedbackScreen /></Lazy>} />
         <Route path={ROUTES.DRAWER} element={<Lazy><DrawerScreen /></Lazy>} />

@@ -1,5 +1,6 @@
 export { AppAudioPlayer, AppVideoPlayer, AppTranscript } from './app-media.tsx';
 export type {
+  AudioPlayerVariant,
   AppAudioPlayerProps,
   FrameMark,
   AppVideoPlayerProps,

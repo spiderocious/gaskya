@@ -6,9 +6,10 @@ import {
   AppPipeline,
   AppButton,
   AppClock,
+  AppPill,
 } from '@gaskya/ui';
 
-import { ScreenHeader, Scene, Note } from '@shared/preview-canvas.tsx';
+import { ScreenHeader, Scene, SectionBreak, Note } from '@shared/preview-canvas.tsx';
 
 export function ProgressScreen() {
   return (
@@ -82,6 +83,37 @@ export function ProgressScreen() {
         />
         <Note>Each stage is bounded and cheap; if a later stage fails, everything before it is kept. The pipeline degrades, never dead-ends.</Note>
       </Scene>
+
+      <SectionBreak label="The smaller signals" />
+      <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
+        <Scene title="Generating fresh questions…" subtitle="AppIndeterminate">
+          <AppIndeterminate />
+          <Note>Topping up your number-series bank so you never see the same item twice.</Note>
+        </Scene>
+
+        <Scene title="Saving — continuous autosave pip" subtitle="AppPill + AppSpinner">
+          <div className="flex items-center gap-2">
+            <AppPill tone="good" dot>Saved · 2s ago</AppPill>
+            <span className="inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-[11.5px] font-semibold" style={{ borderColor: 'var(--hair)', color: 'var(--ink-3)' }}>
+              <AppSpinner size={11} /> Saving…
+            </span>
+          </div>
+        </Scene>
+
+        <Scene title="Score count-up (settles on reveal)" subtitle="the one celebratory motion">
+          <span className="font-serif text-[48px] font-semibold leading-none" style={{ color: 'var(--ac)' }}>
+            7<span className="font-mono text-[19px]" style={{ color: 'var(--ink-3)' }}>/10</span>
+          </span>
+          <Note>Counts up on the Settle curve when a result lands.</Note>
+        </Scene>
+
+        <Scene title="Page load (full-screen splash)" subtitle="AppSpinner large">
+          <div className="grid place-items-center gap-3 rounded-[18px] border p-6" style={{ borderColor: 'var(--hair)', background: 'var(--sheet)' }}>
+            <AppSpinner size={34} />
+            <span className="font-serif text-[16px]">Loading your funnel…</span>
+          </div>
+        </Scene>
+      </div>
     </div>
   );
 }

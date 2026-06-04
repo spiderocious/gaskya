@@ -107,3 +107,50 @@ export function AppResultCard({
     </AppCard>
   );
 }
+
+/** AppStatTile — a single big number with a label and optional delta. */
+export interface AppStatTileProps {
+  eyebrow: ReactNode;
+  value: ReactNode;
+  delta?: ReactNode;
+  className?: string;
+}
+export function AppStatTile({ eyebrow, value, delta, className }: AppStatTileProps) {
+  return (
+    <AppCard className={className}>
+      <div className="font-mono text-[10px] uppercase tracking-[0.16em]" style={{ color: 'var(--ink-3)' }}>
+        {eyebrow}
+      </div>
+      <div className="mt-1 font-serif text-[48px] font-semibold leading-none" style={{ color: 'var(--ac)' }}>
+        {value}
+      </div>
+      {delta ? (
+        <div className="mt-1.5 text-[12.5px]" style={{ color: 'var(--ink-3)' }}>
+          {delta}
+        </div>
+      ) : null}
+    </AppCard>
+  );
+}
+
+/** AppTipCard — the coach's aside, in serif italic on a soft aubergine card. */
+export interface AppTipCardProps {
+  children: ReactNode;
+  className?: string;
+}
+export function AppTipCard({ children, className }: AppTipCardProps) {
+  return (
+    <AppCard tone="soft" className={className}>
+      <span
+        className="inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-[10.5px] font-semibold"
+        style={{ color: 'var(--ac)', borderColor: 'var(--ac-edge)', background: 'var(--sheet)' }}
+      >
+        <span className="h-[7px] w-[7px] rounded-full" style={{ background: 'var(--ac)' }} />
+        Tip
+      </span>
+      <p className="mt-2.5 font-serif text-[14px] italic leading-relaxed" style={{ color: 'var(--ac-deep)' }}>
+        {children}
+      </p>
+    </AppCard>
+  );
+}

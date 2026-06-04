@@ -7,11 +7,24 @@ export function MediaScreen() {
     <div>
       <ScreenHeader num="33 · Data & state" title="Media players" blurb="Re-watch your own answer. Audio is the cheap default path; video is stored whole, processed in a handful of frames." />
 
-      <Scene title="Audio player — the cheap, fast default" subtitle="AppAudioPlayer">
+      <Scene title="Audio player — the cheap, fast default" subtitle="AppAudioPlayer · full">
         <div className="max-w-[520px]">
           <AppAudioPlayer progressPct={42} time="0:42 / 1:00" playing />
         </div>
         <Note>Practice mode is audio-only — instant feedback, retakes allowed, no expensive video pipeline.</Note>
+      </Scene>
+
+      <Scene title="Inline player — inside a history row" subtitle="AppAudioPlayer · inline">
+        <div className="max-w-[360px]">
+          <AppAudioPlayer variant="inline" progressPct={30} time="1:00" />
+        </div>
+      </Scene>
+
+      <Scene title="Recording — capturing now (crimson)" subtitle="AppAudioPlayer · recording">
+        <div className="max-w-[420px]">
+          <AppAudioPlayer variant="recording" progressPct={0} time="0:12" />
+        </div>
+        <Note>Recording borrows the reserved crimson — the one-shot timer is the moment that matters most.</Note>
       </Scene>
 
       <Scene title="Video player — frame strip = the cost model, visible" subtitle="AppVideoPlayer">

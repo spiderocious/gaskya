@@ -1,5 +1,6 @@
 export {
   AppQuestionCard,
+  AppNumericEntry,
   AppWorkedSolution,
   AppAnswerGrid,
   AppBubbleReview,
@@ -7,6 +8,7 @@ export {
 export type {
   QuestionOption,
   AppQuestionCardProps,
+  AppNumericEntryProps,
   SolutionStep,
   AppWorkedSolutionProps,
   AnswerCellState,

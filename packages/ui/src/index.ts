@@ -53,8 +53,13 @@ export type {
   AppAvatarStackProps,
   AppLogoProps,
 } from './display/app-avatar/index.ts';
-export { AppCard, AppResultCard } from './display/app-card/index.ts';
-export type { AppCardProps, AppResultCardProps } from './display/app-card/index.ts';
+export { AppCard, AppResultCard, AppStatTile, AppTipCard } from './display/app-card/index.ts';
+export type {
+  AppCardProps,
+  AppResultCardProps,
+  AppStatTileProps,
+  AppTipCardProps,
+} from './display/app-card/index.ts';
 export {
   AppTrack,
   AppProgressRing,
@@ -113,6 +118,7 @@ export type {
 } from './data/app-charts/index.ts';
 export {
   AppQuestionCard,
+  AppNumericEntry,
   AppWorkedSolution,
   AppAnswerGrid,
   AppBubbleReview,
@@ -120,14 +126,39 @@ export {
 export type {
   QuestionOption,
   AppQuestionCardProps,
+  AppNumericEntryProps,
   SolutionStep,
   AppWorkedSolutionProps,
   AnswerCellState,
   AppAnswerGridProps,
   AppBubbleReviewProps,
 } from './data/app-question/index.ts';
+export {
+  AppItemRecord,
+  AppValidityGate,
+  AppReviewQueue,
+  AppBankStat,
+} from './data/app-question-bank/index.ts';
+export type {
+  ItemMeta,
+  AppItemRecordProps,
+  ValidityCheck,
+  AppValidityGateProps,
+  ReviewItem,
+  AppReviewQueueProps,
+  AppBankStatProps,
+} from './data/app-question-bank/index.ts';
+export { AppShapeSequence, AppFlowRule, AppMatrix3x3 } from './data/app-figure-question/index.ts';
+export type {
+  FigureOptionState,
+  FigureOption,
+  AppShapeSequenceProps,
+  AppFlowRuleProps,
+  AppMatrix3x3Props,
+} from './data/app-figure-question/index.ts';
 export { AppAudioPlayer, AppVideoPlayer, AppTranscript } from './data/app-media/index.ts';
 export type {
+  AudioPlayerVariant,
   AppAudioPlayerProps,
   FrameMark,
   AppVideoPlayerProps,
@@ -135,9 +166,19 @@ export type {
   AppTranscriptProps,
 } from './data/app-media/index.ts';
 
+export { AppTopBar, AppTabBar, AppCommandMenu } from './display/app-nav/index.ts';
+export type {
+  NavTab,
+  AppTopBarProps,
+  TabItem,
+  AppTabBarProps,
+  CommandItem,
+  AppCommandMenuProps,
+} from './display/app-nav/index.ts';
+
 // Overlays
-export { AppTooltip, AppPopover } from './overlays/app-overlay/index.ts';
-export type { AppTooltipProps, AppPopoverProps } from './overlays/app-overlay/index.ts';
+export { AppTooltip, AppPopover, AppHovercard } from './overlays/app-overlay/index.ts';
+export type { AppTooltipProps, AppPopoverProps, AppHovercardProps } from './overlays/app-overlay/index.ts';
 export { AppToast, AppBanner, AppInlineAlert } from './overlays/app-feedback/index.ts';
 export type {
   FeedbackTone,

@@ -1,2 +1,2 @@
-export { AppTooltip, AppPopover } from './app-overlay.tsx';
-export type { AppTooltipProps, AppPopoverProps } from './app-overlay.tsx';
+export { AppTooltip, AppPopover, AppHovercard } from './app-overlay.tsx';
+export type { AppTooltipProps, AppPopoverProps, AppHovercardProps } from './app-overlay.tsx';

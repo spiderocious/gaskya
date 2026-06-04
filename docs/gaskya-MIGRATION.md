@@ -144,6 +144,33 @@ Build them in `apps/web` using the components above; visual spec in the Studio f
 
 ---
 
+## Completeness pass (2026-06-04, round 3)
+
+The first pass shipped one component per concept; this pass built out the *variety* in each
+specimen so the library mirrors the Studio fully. Added:
+
+- **Charts** (`data/app-charts`): `AppBarChart`, `AppStackedBar`, `AppDonut`, `AppHeatmap`,
+  `AppBullet`, `AppRadar`, `AppDistribution` (joining the existing sparkline/trend/ring).
+- **Tables** (`data/app-table`): sortable headers + expandable rows on `AppTable`, plus
+  `AppComparisonTable` and `AppPagination`.
+- **Questions — text** (`data/app-question`): `AppQuestionCard` gained `passage`, `twoColumn`,
+  `footer`; added `AppNumericEntry`. The screen renders all 10 families (number series, ratio
+  word-problem, numeric entry, analogy, syllogism, comprehension, cloze, assumption,
+  T/F/cannot-say, ordering).
+- **Questions — figure** (`data/app-figure-question`, full SVG): `AppShapeSequence`,
+  `AppFlowRule`, `AppMatrix3x3` + data-interpretation via `AppQuestionCard` with an SVG passage.
+- **Question bank / admin** (`data/app-question-bank`): `AppItemRecord`, `AppValidityGate`,
+  `AppReviewQueue`, `AppBankStat`.
+- **Cards** (`display/app-card`): added `AppStatTile`, `AppTipCard`; the screen covers
+  drill / pack / written-prompt / stat / funnel-stage / history / partner / sponsor / tip.
+- **Media** (`data/app-media`): `AppAudioPlayer` gained `variant` (full / inline / recording).
+- **Navigation** (`display/app-nav`): `AppTopBar`, `AppTabBar` (phone), `AppCommandMenu`.
+- **Overlays** (`overlays/app-overlay`): added `AppHovercard`.
+- **Progress**: autosave pip, count-up, generating, page-splash states added to the screen.
+
+New viewer routes: Questions · text / figure / bank, Tooltips, Navigation. Total now
+**30 component files · 26 viewer screens**.
+
 ## Checks (all green)
 
 - `pnpm --filter @gaskya/ui typecheck` → 0

@@ -28,7 +28,9 @@ export const NAV_ITEMS: NavItem[] = [
   { label: 'Date & time', route: ROUTES.DATETIME, group: 'Primitives' },
 
   { label: 'Tables', route: ROUTES.TABLES, group: 'Data & state' },
-  { label: 'Questions', route: ROUTES.QUESTIONS, group: 'Data & state' },
+  { label: 'Questions · text', route: ROUTES.QUESTIONS, group: 'Data & state' },
+  { label: 'Questions · figure', route: ROUTES.FIGURE_QUESTIONS, group: 'Data & state' },
+  { label: 'Question bank', route: ROUTES.QUESTION_BANK, group: 'Data & state' },
   { label: 'Answer review', route: ROUTES.ANSWER_REVIEW, group: 'Data & state' },
   { label: 'Media players', route: ROUTES.MEDIA, group: 'Data & state' },
   { label: 'Charts', route: ROUTES.CHARTS, group: 'Data & state' },
@@ -37,6 +39,7 @@ export const NAV_ITEMS: NavItem[] = [
   { label: 'Avatars & pills', route: ROUTES.AVATARS, group: 'Data & state' },
   { label: 'Cards', route: ROUTES.CARDS, group: 'Data & state' },
   { label: 'Tooltips', route: ROUTES.TOOLTIPS, group: 'Data & state' },
+  { label: 'Navigation', route: ROUTES.NAVIGATION, group: 'Data & state' },
 
   { label: 'Modals', route: ROUTES.MODALS, group: 'Overlays & system' },
   { label: 'Feedback', route: ROUTES.FEEDBACK, group: 'Overlays & system' },

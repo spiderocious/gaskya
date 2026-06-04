@@ -1,4 +1,4 @@
-import { AppButton } from '@gaskya/ui';
+import { AppButton, AppClock } from '@gaskya/ui';
 
 import { ScreenHeader, Scene, SectionBreak, Row, Note } from '@shared/preview-canvas.tsx';
 
@@ -10,6 +10,16 @@ export function ButtonsScreen() {
         title="Buttons"
         blurb="The physical key press — the system's single tactile flourish. Rendered in the moments they live, then the full set, small."
       />
+
+      <Scene title="Scene · a drill's toolbar" subtitle="small buttons + the clock">
+        <div className="flex flex-wrap items-center gap-2.5 rounded-[14px] border px-4 py-3" style={{ borderColor: 'var(--hair)', background: 'var(--sheet)' }}>
+          <AppButton size="sm" variant="secondary">◷ Untimed</AppButton>
+          <AppButton size="sm">Timed</AppButton>
+          <span className="flex-1" />
+          <AppClock time="10:00" label="set" />
+          <AppButton size="sm">Begin drill</AppButton>
+        </div>
+      </Scene>
 
       <Scene title="Scene · the no-signup sample, after the score" subtitle="primary · ghost · skip">
         <div

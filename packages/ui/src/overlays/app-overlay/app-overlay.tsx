@@ -64,3 +64,31 @@ export function AppPopover({ trigger, children, className }: AppPopoverProps) {
     </span>
   );
 }
+
+export interface AppHovercardProps {
+  trigger: ReactNode;
+  children: ReactNode;
+  className?: string;
+}
+
+/** Hovercard — a richer popover that opens on hover (a sub-skill at a glance). */
+export function AppHovercard({ trigger, children, className }: AppHovercardProps) {
+  const [show, setShow] = useState(false);
+  return (
+    <span className="relative inline-flex" onMouseEnter={() => setShow(true)} onMouseLeave={() => setShow(false)}>
+      {trigger}
+      {show ? (
+        <div
+          className={cn(
+            'absolute top-[calc(100%+10px)] left-0 z-30 w-[300px] overflow-hidden rounded-[18px] border shadow-[0_8px_28px_-12px_rgba(44,38,32,0.25)]',
+            className,
+          )}
+          style={{ background: 'var(--sheet)', borderColor: 'var(--hair)' }}
+          role="dialog"
+        >
+          {children}
+        </div>
+      ) : null}
+    </span>
+  );
+}

@@ -12,47 +12,61 @@ import { cn } from '../../utils/cn.ts';
  * the library presentational and the cost-model honest.
  */
 
+export type AudioPlayerVariant = 'full' | 'inline' | 'recording';
+
 export interface AppAudioPlayerProps {
   progressPct: number;
   time: string;
   speed?: string;
   playing?: boolean;
+  /** full = the default review player · inline = a compact history-row player · recording = live capture (crimson). */
+  variant?: AudioPlayerVariant;
   className?: string;
 }
 
-export function AppAudioPlayer({ progressPct, time, speed = '1.0×', playing, className }: AppAudioPlayerProps) {
+export function AppAudioPlayer({ progressPct, time, speed = '1.0×', playing, variant = 'full', className }: AppAudioPlayerProps) {
   // Static waveform bars (the visual). Heights are deterministic, not random.
   const bars = [12, 26, 18, 34, 22, 40, 16, 44, 28, 20, 36, 14, 30, 22, 38, 10, 26, 18, 32, 12];
-  const playedCount = Math.round((progressPct / 100) * bars.length);
+  const playedCount = variant === 'recording' ? Math.round(bars.length * 0.55) : Math.round((progressPct / 100) * bars.length);
+  const rec = variant === 'recording';
+  const inline = variant === 'inline';
+  const fill = rec ? 'var(--crit)' : 'var(--ac)';
   return (
     <div
-      className={cn('flex items-center gap-3.5 rounded-[18px] border p-4', className)}
-      style={{ borderColor: 'var(--hair)', background: 'var(--paper)' }}
+      className={cn('flex items-center rounded-[18px] border', inline ? 'gap-3 p-2.5' : 'gap-3.5 p-4', className)}
+      style={{
+        borderColor: rec ? 'var(--crit-edge)' : 'var(--hair)',
+        background: rec ? 'var(--crit-soft)' : 'var(--paper)',
+      }}
     >
       <span
-        className="grid h-[46px] w-[46px] shrink-0 place-items-center rounded-full text-[16px] text-white"
-        style={{ background: 'var(--ac)', boxShadow: '0 3px 0 0 var(--ac-deep)' }}
+        className={cn('grid shrink-0 place-items-center rounded-full text-white', inline ? 'h-9 w-9 text-[13px]' : 'h-[46px] w-[46px] text-[16px]')}
+        style={{ background: fill, boxShadow: `0 3px 0 0 ${rec ? '#7a1d15' : 'var(--ac-deep)'}` }}
       >
-        {playing ? '❚❚' : '▶'}
+        {rec ? '●' : playing ? '❚❚' : '▶'}
       </span>
-      <div className="flex h-11 flex-1 items-center gap-[2.5px]">
-        {bars.map((h, i) => (
+      <div className={cn('flex flex-1 items-center gap-[2.5px]', inline ? 'h-7' : 'h-11')}>
+        {(inline ? bars.slice(0, 10) : bars).map((h, i) => (
           <span
             key={i}
             className="w-[3px] rounded-[2px]"
-            style={{ height: h, background: i < playedCount ? 'var(--ac)' : 'var(--hair)' }}
+            style={{ height: inline ? h * 0.6 : h, background: i < playedCount ? fill : 'var(--hair)' }}
           />
         ))}
       </div>
-      <span className="whitespace-nowrap font-mono text-[12px]" style={{ color: 'var(--ink-3)' }}>
+      <span className="whitespace-nowrap font-mono text-[12px]" style={{ color: rec ? 'var(--crit)' : 'var(--ink-3)' }}>
         {time}
       </span>
-      <span
-        className="cursor-pointer rounded-full border px-2.5 py-1 font-mono text-[12px]"
-        style={{ borderColor: 'var(--hair)' }}
-      >
-        {speed}
-      </span>
+      {!inline && !rec ? (
+        <span className="cursor-pointer rounded-full border px-2.5 py-1 font-mono text-[12px]" style={{ borderColor: 'var(--hair)' }}>
+          {speed}
+        </span>
+      ) : null}
+      {rec ? (
+        <span className="rounded-full px-2.5 py-1 font-mono text-[11px] font-semibold" style={{ background: 'var(--crit)', color: '#fff' }}>
+          REC
+        </span>
+      ) : null}
     </div>
   );
 }

@@ -21,8 +21,14 @@ export interface QuestionOption {
 export interface AppQuestionCardProps {
   family: string;
   stem: ReactNode;
+  /** Optional reading passage / premise block above the stem. */
+  passage?: ReactNode;
   options: ReadonlyArray<QuestionOption>;
+  /** Lay options in two columns (good for short numeric/letter options). */
+  twoColumn?: boolean;
   provenance?: string;
+  /** Optional footer (e.g. report-a-problem). */
+  footer?: ReactNode;
   onPick?: (letter: string) => void;
   className?: string;
 }
@@ -44,8 +50,11 @@ const BUBBLE_FOR: Record<NonNullable<QuestionOption['state']>, AppBubbleState> =
 export function AppQuestionCard({
   family,
   stem,
+  passage,
   options,
+  twoColumn,
   provenance,
+  footer,
   onPick,
   className,
 }: AppQuestionCardProps) {
@@ -63,10 +72,15 @@ export function AppQuestionCard({
         ) : null}
       </div>
       <div className="p-[18px]">
+        {passage ? (
+          <div className="mb-4 rounded-[14px] px-4 py-3.5 text-[13.5px] leading-relaxed" style={{ background: 'var(--paper-2)', color: 'var(--ink-2)' }}>
+            {passage}
+          </div>
+        ) : null}
         <div className="font-serif text-[16px] leading-relaxed" style={{ color: 'var(--ink)' }}>
           {stem}
         </div>
-        <div className="mt-4 flex flex-col gap-2.5">
+        <div className={cn('mt-4 gap-2.5', twoColumn ? 'grid grid-cols-2' : 'flex flex-col')}>
           {options.map((o) => {
             const st = o.state ?? 'idle';
             return (
@@ -82,6 +96,38 @@ export function AppQuestionCard({
               </button>
             );
           })}
+        </div>
+        {footer ? <div className="mt-4 flex flex-wrap items-center gap-3">{footer}</div> : null}
+      </div>
+    </div>
+  );
+}
+
+// ---------- Numeric entry (type-the-answer) ----------
+export interface AppNumericEntryProps {
+  family: string;
+  stem: ReactNode;
+  value?: string;
+  unit?: ReactNode;
+  provenance?: string;
+  className?: string;
+}
+export function AppNumericEntry({ family, stem, value, unit, provenance, className }: AppNumericEntryProps) {
+  return (
+    <div className={cn('overflow-hidden rounded-[18px] border', className)} style={{ borderColor: 'var(--hair)', background: 'var(--sheet)' }}>
+      <div className="flex items-center gap-2.5 border-b px-[18px] py-3" style={{ borderColor: 'var(--hair-2)' }}>
+        <AppTag>{family}</AppTag>
+        {provenance ? <span className="ml-auto font-mono text-[11px]" style={{ color: 'var(--ink-3)' }}>{provenance}</span> : null}
+      </div>
+      <div className="p-[18px]">
+        <div className="font-serif text-[16px] leading-relaxed" style={{ color: 'var(--ink)' }}>{stem}</div>
+        <div className="mt-4 flex items-center gap-2.5">
+          <input
+            defaultValue={value}
+            className="h-[46px] w-[140px] rounded-[14px] border px-4 font-mono text-[15px] outline-none focus:border-[var(--ac)] focus:shadow-[0_0_0_4px_var(--ac-soft)]"
+            style={{ borderColor: 'var(--hair)', background: 'var(--sheet)', color: 'var(--ink)' }}
+          />
+          {unit ? <span className="text-[13px]" style={{ color: 'var(--ink-3)' }}>{unit}</span> : null}
         </div>
       </div>
     </div>

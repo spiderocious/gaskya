@@ -1,4 +1,4 @@
-import { AppCard, AppResultCard, AppButton, AppPill, AppTag } from '@gaskya/ui';
+import { AppCard, AppResultCard, AppStatTile, AppTipCard, AppLogo, AppButton, AppPill, AppTag } from '@gaskya/ui';
 
 import { ScreenHeader, SectionBreak, Note } from '@shared/preview-canvas.tsx';
 
@@ -57,14 +57,27 @@ export function CardsScreen() {
           </AppButton>
         </AppCard>
 
+        <AppStatTile eyebrow="Mocks taken" value="12" delta={<><span style={{ color: 'var(--good)' }}>▲ 4</span> this week</>} />
+
         <AppCard>
-          <AppTag>Mocks taken</AppTag>
-          <div className="mt-1 font-serif text-[48px] font-semibold leading-none" style={{ color: 'var(--ac)' }}>
-            12
+          <div className="flex items-center justify-between">
+            <AppLogo tone="warn">SH</AppLogo>
+            <AppPill dot>6 prompts</AppPill>
           </div>
-          <div className="mt-1.5 text-[12.5px]" style={{ color: 'var(--ink-3)' }}>
-            <span style={{ color: 'var(--good)' }}>▲ 4</span> this week
+          <div className="mt-2.5 font-serif text-[18px] font-semibold">Shell-style competency</div>
+          <div className="mb-3.5 mt-1 text-[12.5px]" style={{ color: 'var(--ink-3)' }}>
+            Async video · 30s think · 60s answer
           </div>
+          <AppButton size="sm" variant="ghost" block>Start practice</AppButton>
+        </AppCard>
+
+        <AppCard>
+          <AppTag>Written · motivational</AppTag>
+          <div className="mb-1 mt-2 font-serif text-[16px] font-semibold leading-snug">“Why do you want this graduate role?”</div>
+          <div className="mb-3.5 text-[12.5px]" style={{ color: 'var(--ink-3)' }}>
+            Timed or untimed · originality check included
+          </div>
+          <AppButton size="sm" variant="ghost" block>Draft an answer</AppButton>
         </AppCard>
 
         <AppCard tone="accent">
@@ -77,13 +90,15 @@ export function CardsScreen() {
           </AppButton>
         </AppCard>
 
-        <AppCard tone="soft">
-          <AppPill tone="accent" dot>Tip</AppPill>
-          <p className="mt-2.5 font-serif text-[14px] italic leading-relaxed" style={{ color: 'var(--ac-deep)' }}>
-            On bank tests the number-series pattern is almost always one layer of differences down.
-            Check the gaps first.
-          </p>
+        <AppCard>
+          <AppLogo>BUK</AppLogo>
+          <div className="mt-2.5 font-serif text-[16px] font-semibold">Bayero University Careers Office</div>
+          <div className="mt-1 text-[12.5px]" style={{ color: 'var(--ink-3)' }}>In partnership · free for the 2026 cohort</div>
         </AppCard>
+
+        <AppTipCard>
+          On bank tests the number-series pattern is almost always one layer of differences down. Check the gaps first.
+        </AppTipCard>
 
         <AppCard>
           <div className="flex items-center justify-between">
