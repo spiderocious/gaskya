@@ -31,13 +31,26 @@ export type {
   AppSegmentedProps,
   AppChipProps,
 } from './primitives/app-selection/index.ts';
-export { AppStepper, AppSlider, AppTagInput, AppSearch, AppDropzone } from './primitives/app-more-inputs/index.ts';
+export {
+  AppStepper,
+  AppSlider,
+  AppTagInput,
+  AppSearch,
+  AppDropzone,
+  AppCombobox,
+  AppPinInput,
+  AppDifficulty,
+} from './primitives/app-more-inputs/index.ts';
 export type {
   AppStepperProps,
   AppSliderProps,
   AppTagInputProps,
   AppSearchProps,
   AppDropzoneProps,
+  ComboResult,
+  AppComboboxProps,
+  AppPinInputProps,
+  AppDifficultyProps,
 } from './primitives/app-more-inputs/index.ts';
 export { AppClock } from './primitives/app-clock/index.ts';
 export type { AppClockProps } from './primitives/app-clock/index.ts';
