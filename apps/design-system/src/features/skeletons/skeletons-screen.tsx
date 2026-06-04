@@ -1,4 +1,5 @@
 import { AppSkeleton, AppEmptyState, AppErrorState, AppButton } from '@gaskya/ui';
+import { CheckCheck } from '@icons';
 
 import { ScreenHeader, Scene, Note } from '@shared/preview-canvas.tsx';
 
@@ -40,7 +41,7 @@ export function SkeletonsScreen() {
 
         <Scene title="Empty — nothing to drill (a good problem)" subtitle="AppEmptyState ✓">
           <AppEmptyState
-            icon="✓"
+            icon={<CheckCheck size={20} strokeWidth={2} />}
             title="Nothing flagged to drill."
             body="You're scoring evenly across every sub-skill. Try a full timed mock to find your real ceiling."
             action={

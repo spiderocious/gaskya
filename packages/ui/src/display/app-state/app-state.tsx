@@ -1,5 +1,6 @@
 import { type ReactNode } from 'react';
 
+import { Sparkles } from '../../icons/index.ts';
 import { cn } from '../../utils/cn.ts';
 
 /**
@@ -32,14 +33,14 @@ export interface AppEmptyStateProps {
   className?: string;
 }
 
-export function AppEmptyState({ icon = '◆', title, body, action, className }: AppEmptyStateProps) {
+export function AppEmptyState({ icon, title, body, action, className }: AppEmptyStateProps) {
   return (
     <div className={cn('px-4 py-8 text-center', className)}>
       <div
-        className="mx-auto mb-4 grid h-[52px] w-[52px] place-items-center rounded-full border text-[18px]"
+        className="mx-auto mb-4 grid h-[52px] w-[52px] place-items-center rounded-full border"
         style={{ background: 'var(--ac-soft)', borderColor: 'var(--ac-edge)', color: 'var(--ac)' }}
       >
-        {icon}
+        {icon ?? <Sparkles size={20} strokeWidth={2} />}
       </div>
       <div className="mb-2 font-serif text-[17px] font-medium" style={{ color: 'var(--ink)' }}>
         {title}

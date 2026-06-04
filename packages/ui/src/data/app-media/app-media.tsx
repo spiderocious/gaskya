@@ -1,5 +1,6 @@
 import { type ReactNode } from 'react';
 
+import { Play, Pause, Circle } from '../../icons/index.ts';
 import { cn } from '../../utils/cn.ts';
 
 /**
@@ -43,7 +44,7 @@ export function AppAudioPlayer({ progressPct, time, speed = '1.0×', playing, va
         className={cn('grid shrink-0 place-items-center rounded-full text-white', inline ? 'h-9 w-9 text-[13px]' : 'h-[46px] w-[46px] text-[16px]')}
         style={{ background: fill, boxShadow: `0 3px 0 0 ${rec ? '#7a1d15' : 'var(--ac-deep)'}` }}
       >
-        {rec ? '●' : playing ? '❚❚' : '▶'}
+        {rec ? <Circle size={inline ? 11 : 14} fill="currentColor" strokeWidth={0} /> : playing ? <Pause size={inline ? 13 : 16} fill="currentColor" strokeWidth={0} /> : <Play size={inline ? 13 : 16} fill="currentColor" strokeWidth={0} />}
       </span>
       <div className={cn('flex flex-1 items-center gap-[2.5px]', inline ? 'h-7' : 'h-11')}>
         {(inline ? bars.slice(0, 10) : bars).map((h, i) => (
@@ -92,8 +93,8 @@ export function AppVideoPlayer({ progressPct, time, frames, flagsPct, className 
         style={{ background: 'linear-gradient(165deg,#2a2330,#3c3040)' }}
       >
         <span className="h-[88px] w-[88px] rounded-full" style={{ background: 'rgba(255,255,255,0.1)' }} />
-        <span className="absolute grid h-14 w-14 place-items-center rounded-full bg-white/90 text-[20px]" style={{ color: 'var(--ac)' }}>
-          ▶
+        <span className="absolute grid h-14 w-14 place-items-center rounded-full bg-white/90" style={{ color: 'var(--ac)' }}>
+          <Play size={20} fill="currentColor" strokeWidth={0} />
         </span>
         <span className="absolute bottom-3 left-3 rounded-full bg-black/50 px-2.5 py-1 font-mono text-[12px] text-white">
           {time}

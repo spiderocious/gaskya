@@ -1,5 +1,6 @@
 import { type ReactNode } from 'react';
 
+import { Upload, Search } from '../../icons/index.ts';
 import { cn } from '../../utils/cn.ts';
 
 /**
@@ -123,7 +124,7 @@ export function AppSearch({ value, onChange, placeholder = 'Search…', classNam
   return (
     <div className={cn('relative', className)}>
       <span className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2" style={{ color: 'var(--ink-4)' }} aria-hidden>
-        ⌕
+        <Search size={16} strokeWidth={2} />
       </span>
       <input
         value={value}
@@ -143,17 +144,17 @@ export interface AppDropzoneProps {
   className?: string;
 }
 
-export function AppDropzone({ title, hint, icon = '⤓', className }: AppDropzoneProps) {
+export function AppDropzone({ title, hint, icon, className }: AppDropzoneProps) {
   return (
     <div
       className={cn('rounded-[14px] border-[1.5px] border-dashed p-7 text-center', className)}
       style={{ borderColor: 'var(--ac-edge)', background: 'var(--ac-soft)' }}
     >
       <div
-        className="mx-auto mb-3 grid h-10 w-10 place-items-center rounded-xl border bg-[var(--sheet)] text-[18px]"
+        className="mx-auto mb-3 grid h-10 w-10 place-items-center rounded-xl border bg-[var(--sheet)]"
         style={{ borderColor: 'var(--ac-edge)', color: 'var(--ac)' }}
       >
-        {icon}
+        {icon ?? <Upload size={18} strokeWidth={2} />}
       </div>
       <div className="text-[14px] font-semibold" style={{ color: 'var(--ink)' }}>
         {title}
@@ -190,7 +191,7 @@ export function AppCombobox({ value, onChange, results, onPick, placeholder = 'S
   return (
     <div className={cn('relative', className)}>
       <span className="pointer-events-none absolute left-3.5 top-[23px] -translate-y-1/2" style={{ color: 'var(--ink-4)' }} aria-hidden>
-        ⌕
+        <Search size={16} strokeWidth={2} />
       </span>
       <input
         value={value}

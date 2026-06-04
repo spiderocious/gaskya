@@ -1,4 +1,5 @@
 import { AppAudioPlayer, AppVideoPlayer, AppTranscript, AppButton } from '@gaskya/ui';
+import { RotateCcw } from '@icons';
 
 import { ScreenHeader, Scene, Note } from '@shared/preview-canvas.tsx';
 
@@ -43,8 +44,8 @@ export function MediaScreen() {
             ]}
           />
           <div className="mt-3 flex gap-3">
-            <AppButton size="sm" variant="secondary">
-              ↻ Re-watch
+            <AppButton size="sm" variant="secondary" leadingIcon={<RotateCcw size={14} strokeWidth={2} />}>
+              Re-watch
             </AppButton>
             <AppButton size="sm">Retake</AppButton>
           </div>
