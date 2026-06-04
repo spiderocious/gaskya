@@ -1,6 +1,9 @@
 import { AppTopBar, AppTabBar, AppCommandMenu, AppPill, AppAvatar } from '@gaskya/ui';
+import { Target, Dumbbell, Video, History, Sparkles, Play, Mic, PenLine } from '@icons';
 
 import { ScreenHeader, Scene, Note } from '@shared/preview-canvas.tsx';
+
+const ni = { size: 16, strokeWidth: 2 };
 
 export function NavigationScreen() {
   return (
@@ -33,10 +36,10 @@ export function NavigationScreen() {
           </div>
           <AppTabBar
             items={[
-              { label: 'Funnel', active: true },
-              { label: 'Practise' },
-              { label: 'Video' },
-              { label: 'History' },
+              { label: 'Funnel', active: true, icon: <Target {...ni} /> },
+              { label: 'Practise', icon: <Dumbbell {...ni} /> },
+              { label: 'Video', icon: <Video {...ni} /> },
+              { label: 'History', icon: <History {...ni} /> },
             ]}
           />
         </div>
@@ -46,10 +49,10 @@ export function NavigationScreen() {
       <Scene title="Quick jump" subtitle="AppCommandMenu">
         <AppCommandMenu
           items={[
-            { icon: '◆', label: 'Drill number series', shortcut: '↵', active: true },
-            { icon: '▶', label: 'Start a numerical mock' },
-            { icon: '◉', label: 'Record a video answer' },
-            { icon: '✎', label: 'Draft a “why this firm” answer' },
+            { icon: <Sparkles {...ni} />, label: 'Drill number series', shortcut: '↵', active: true },
+            { icon: <Play {...ni} />, label: 'Start a numerical mock' },
+            { icon: <Mic {...ni} />, label: 'Record a video answer' },
+            { icon: <PenLine {...ni} />, label: 'Draft a “why this firm” answer' },
           ]}
         />
       </Scene>

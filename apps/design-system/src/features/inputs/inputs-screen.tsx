@@ -10,14 +10,24 @@ import {
   AppBubble,
   AppOtp,
 } from '@gaskya/ui';
+import { Landmark, Building2, Fuel, GraduationCap, Calculator, BookOpen, Shapes, Brain } from '@icons';
 
 import { ScreenHeader, Scene, SectionBreak, Note } from '@shared/preview-canvas.tsx';
 
+const ic = { size: 16, strokeWidth: 2 };
+
 const TARGETS = [
-  { value: 'banks', label: 'Banks — Graduate Trainee', sub: 'Numerical-heavy · video stage common', icon: '🏦' },
-  { value: 'big4', label: 'Big 4 — Audit & Advisory', sub: 'Critical reasoning · case write-up', icon: '📊' },
-  { value: 'oil', label: 'Oil & Gas — NNPC / Shell', sub: 'Diagrammatic · async video', icon: '⛽' },
-  { value: 'general', label: 'General graduate trainee', sub: 'Balanced across families', icon: '🎓' },
+  { value: 'banks', label: 'Banks — Graduate Trainee', sub: 'Numerical-heavy · video stage common', icon: <Landmark {...ic} /> },
+  { value: 'big4', label: 'Big 4 — Audit & Advisory', sub: 'Critical reasoning · case write-up', icon: <Building2 {...ic} /> },
+  { value: 'oil', label: 'Oil & Gas — NNPC / Shell', sub: 'Diagrammatic · async video', icon: <Fuel {...ic} /> },
+  { value: 'general', label: 'General graduate trainee', sub: 'Balanced across families', icon: <GraduationCap {...ic} /> },
+];
+
+const SUBSKILLS = [
+  { value: 'calc', label: 'Numerical reasoning', sub: 'Series, ratio, data interpretation', icon: <Calculator {...ic} /> },
+  { value: 'verbal', label: 'Verbal reasoning', sub: 'Analogy, syllogism, comprehension', icon: <BookOpen {...ic} /> },
+  { value: 'dia', label: 'Diagrammatic', sub: 'Shape sequences, flow rules', icon: <Shapes {...ic} /> },
+  { value: 'abs', label: 'Abstract reasoning', sub: '3×3 matrices', icon: <Brain {...ic} /> },
 ];
 
 const FAMILIES = [
@@ -31,6 +41,7 @@ const FAMILIES = [
 
 export function InputsScreen() {
   const [target, setTarget] = useState('banks');
+  const [subskill, setSubskill] = useState('calc');
   const [families, setFamilies] = useState<string[]>(['num', 'vrb', 'crt']);
   const [answer, setAnswer] = useState<string>('B');
 
@@ -82,15 +93,26 @@ export function InputsScreen() {
 
       <Scene title="Domain · what are you aiming for?" subtitle="AppSelect / AppIconSelect">
         <div className="grid max-w-[680px] grid-cols-1 gap-6 sm:grid-cols-2">
-          <AppField label="Native select">
+          <AppField label="Native select (no per-option icons)">
             <AppSelect
               options={TARGETS.map((t) => ({ value: t.value, label: t.label }))}
               defaultValue="banks"
             />
           </AppField>
-          <AppField label="Icon select (hand-rolled)">
+          <AppField label="Icon select — target employer">
             <AppIconSelect options={TARGETS} value={target} onChange={setTarget} />
           </AppField>
+        </div>
+        <Note>
+          The icon-select renders a real <code>lucide-react</code> icon per option (via <code>@icons</code>),
+          a label, and a one-line read of what each target's test emphasises. A native <code>&lt;select&gt;</code>
+          can't show per-option icons, so the icon path is always <code>AppIconSelect</code>.
+        </Note>
+      </Scene>
+
+      <Scene title="Icon select — pick a sub-skill to drill" subtitle="AppIconSelect (second example)">
+        <div className="max-w-[420px]">
+          <AppIconSelect options={SUBSKILLS} value={subskill} onChange={setSubskill} />
         </div>
       </Scene>
 
